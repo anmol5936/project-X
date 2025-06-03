@@ -8,10 +8,14 @@ let redisClient = null;
  */
 const createRedisClient = () => {
   if (!redisClient) {
-    redisClient = new Redis(process.env.REDIS_URL, {
+    const redisOptions = {
+      host: process.env.REDIS_HOST || '127.0.0.1', // Default to localhost if not set
+      port: process.env.REDIS_PORT || 6379,       // Default to 6379 if not set
+      // Add other options like password if needed from process.env
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
-    });
+    };
+    redisClient = new Redis(redisOptions);
 
     redisClient.on('error', (err) => {
       console.error('Redis connection error:', err);
