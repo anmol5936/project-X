@@ -1,7 +1,4 @@
-/**
- * Authentication middleware for admin-only routes
- * Uses a simple API key-based authentication
- */
+
 const adminAuth = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
   

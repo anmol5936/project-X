@@ -2,16 +2,17 @@ const Redis = require('ioredis');
 
 let redisClient = null;
 
-/**
- * Create a new Redis client
- * @returns {Redis} Redis client
- */
+
 const createRedisClient = () => {
   if (!redisClient) {
-    redisClient = new Redis(process.env.REDIS_URL, {
+    const redisOptions = {
+      host: process.env.REDIS_HOST || '127.0.0.1', 
+      port: process.env.REDIS_PORT || 6379,       
+      
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
-    });
+    };
+    redisClient = new Redis(redisOptions);
 
     redisClient.on('error', (err) => {
       console.error('Redis connection error:', err);
@@ -25,10 +26,7 @@ const createRedisClient = () => {
   return redisClient;
 };
 
-/**
- * Get the Redis client instance
- * @returns {Redis} Redis client
- */
+
 const getRedisClient = () => {
   if (!redisClient) {
     return createRedisClient();
@@ -36,9 +34,7 @@ const getRedisClient = () => {
   return redisClient;
 };
 
-/**
- * Close the Redis connection
- */
+
 const closeRedisConnection = async () => {
   if (redisClient) {
     await redisClient.quit();
