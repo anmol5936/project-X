@@ -1,0 +1,70 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      
+    - name: Deploy to EC2
+      run: |
+        ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+          # Navigate to project directory (create if doesn't exist)
+          mkdir -p ~/chapter-performance-dashboard
+          cd ~/chapter-performance-dashboard
+          
+          # Pull latest code or clone if first deployment
+          if [ -d .git ]; then
+            git pull
+          else
+            git clone https://github.com/${{ github.repository }} .
+          fi
+          
+          # Install dependencies
+          npm install
+          
+          # Create/update environment variables
+          cat > .env << 'ENVFILE'
+          PORT=5000
+          NODE_ENV=production
+          MONGO_URI=${{ secrets.MONGO_URI }}
+          REDIS_URL=${{ secrets.REDIS_URL }}
+          ADMIN_API_KEY=${{ secrets.ADMIN_API_KEY }}
+          ENVFILE
+          
+          # Install PM2 globally if not already installed
+          if ! command -v pm2 &> /dev/null; then
+            npm install -g pm2
+          fi
+          
+          # Start/restart the application
+          pm2 describe server > /dev/null
+          if [ $? -eq 0 ]; then
+            pm2 restart server
+          else
+            pm2 start server.js --name="server"
+            pm2 save
+            pm2 startup
+          fi
+        EOF

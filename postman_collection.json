@@ -1,0 +1,137 @@
+{
+  "info": {
+    "_postman_id": "a5e3f8d8-7c9a-4b3e-8a7c-d89f0f3e12e8",
+    "name": "Chapter Performance Dashboard API",
+    "description": "A collection of API endpoints for the Chapter Performance Dashboard",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Chapters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/chapters?page=1&limit=10&class=Class 11&subject=Physics&unit=Mechanics 1&status=Completed&weakChapters=true",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "chapters"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Number of items per page"
+            },
+            {
+              "key": "class",
+              "value": "Class 11",
+              "description": "Filter by class"
+            },
+            {
+              "key": "subject",
+              "value": "Physics",
+              "description": "Filter by subject"
+            },
+            {
+              "key": "unit",
+              "value": "Mechanics 1",
+              "description": "Filter by unit"
+            },
+            {
+              "key": "status",
+              "value": "Completed",
+              "description": "Filter by status (Not Started, In Progress, Completed)"
+            },
+            {
+              "key": "weakChapters",
+              "value": "true",
+              "description": "Filter by weak chapter status (true/false)"
+            }
+          ]
+        },
+        "description": "Retrieve chapters with optional filtering by class, unit, status, weakChapters, and subject. Supports pagination with page and limit parameters."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Chapter by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/chapters/60d21b4667d0d8992e610c85",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "chapters", "60d21b4667d0d8992e610c85"]
+        },
+        "description": "Retrieve a specific chapter by its MongoDB _id."
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Chapters (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{admin_api_key}}",
+            "description": "Admin API key for authentication",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "/path/to/all_subjects_chapter_data.json",
+              "description": "JSON file containing an array of chapter objects"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/chapters",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "chapters"]
+        },
+        "description": "Upload a JSON file containing an array of chapters. Requires admin authentication via the x-api-key header."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "admin_api_key",
+      "value": "your-secret-api-key-here",
+      "type": "string",
+      "description": "Admin API key for protected routes"
+    }
+  ]
+}
