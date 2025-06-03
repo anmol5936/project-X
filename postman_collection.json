@@ -89,7 +89,7 @@
             {
               "key": "file",
               "type": "file",
-              "src": "/path/to/all_subjects_chapter_data.json",
+              "src": "all_subjects_chapter_data.json",
               "description": "JSON file containing an array of chapter objects"
             }
           ]
@@ -120,18 +120,19 @@
       }
     }
   ],
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "http://localhost:5000",
-      "type": "string",
-      "description": "Base URL for the API"
-    },
-    {
-      "key": "admin_api_key",
-      "value": "your-secret-api-key-here",
-      "type": "string",
-      "description": "Admin API key for protected routes"
-    }
-  ]
+ "variable": [
+  {
+    "key": "base_url",
+    "value": "http://localhost:5000",
+    "type": "string",
+    "description": "Base URL for the API"
+  },
+  {
+    "key": "admin_api_key",
+    "value": "fd4a2e2b5c7a34f1089e1e309ad9bafe7820c8fd093712ef3d3f3259fc1b7d2a",
+    "type": "string",
+    "description": "Admin API key for protected routes"
+  }
+]
+
 }
