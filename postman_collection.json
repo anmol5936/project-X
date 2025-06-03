@@ -2,324 +2,470 @@
   "info": {
     "_postman_id": "a5e3f8d8-7c9a-4b3e-8a7c-d89f0f3e12e8",
     "name": "Chapter Performance Dashboard API",
-    "description": "A collection of API endpoints for the Chapter Performance Dashboard",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "A comprehensive collection of API endpoints for the Chapter Performance Dashboard with Redis caching, rate limiting, and admin authentication. This collection includes all CRUD operations, filtering, pagination, and comprehensive error handling scenarios.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
   },
   "item": [
     {
-      "name": "Get All Chapters",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{base_url}}/api/v1/chapters?page=1&limit=10&class=Class 11&subject=Physics&unit=Mechanics 1&status=Completed&weakChapters=true",
-          "host": ["{{base_url}}"],
-          "path": ["api", "v1", "chapters"],
-          "query": [
-            {
-              "key": "page",
-              "value": "1",
-              "description": "Page number"
-            },
-            {
-              "key": "limit",
-              "value": "10",
-              "description": "Number of items per page"
-            },
-            {
-              "key": "class",
-              "value": "Class 11",
-              "description": "Filter by class"
-            },
-            {
-              "key": "subject",
-              "value": "Physics",
-              "description": "Filter by subject"
-            },
-            {
-              "key": "unit",
-              "value": "Mechanics 1",
-              "description": "Filter by unit"
-            },
-            {
-              "key": "status",
-              "value": "Completed",
-              "description": "Filter by status (Not Started, In Progress, Completed)"
-            },
-            {
-              "key": "weakChapters",
-              "value": "true",
-              "description": "Filter by weak chapter status (true/false)"
-            }
-          ]
-        },
-        "description": "Retrieve chapters with optional filtering by class, unit, status, weakChapters, and subject. Supports pagination with page and limit parameters."
-      },
-      "response": [
+      "name": "Chapters Management",
+      "description": "All endpoints related to chapter management including retrieval, filtering, and admin operations",
+      "item": [
         {
-          "name": "Success - Chapters Retrieved",
-          "originalRequest": {
+          "name": "Get All Chapters - Basic",
+          "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/chapters?page=1&limit=2",
+              "raw": "{{base_url}}/api/v1/chapters?page=1&limit=10",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "chapters"],
               "query": [
-                {"key": "page", "value": "1"},
-                {"key": "limit", "value": "2"}
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page (default: 10, max: 100)"
+                }
               ]
-            }
+            },
+            "description": "Retrieve all chapters with basic pagination. This endpoint supports Redis caching for 1 hour and implements rate limiting (30 requests/minute per IP)."
           },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": true,\n  \"total\": 4,\n  \"page\": 1,\n  \"limit\": 2,\n  \"chapters\": [\n    {\n      \"_id\": \"683f49980dbf881e4ce70ff3\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Intro to Physics\",\n      \"class\": \"Class 11\",\n      \"unit\": \"General\",\n      \"yearWiseQuestionCount\": {\"2020\": 1},\n      \"questionSolved\": 1,\n      \"status\": \"Completed\",\n      \"isWeakChapter\": false,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    },\n    {\n      \"_id\": \"60d21b4667d0d8992e610c86\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Vectors\",\n      \"class\": \"Class 11\",\n      \"unit\": \"Mechanics\",\n      \"yearWiseQuestionCount\": {\"2021\": 2},\n      \"questionSolved\": 2,\n      \"status\": \"In Progress\",\n      \"isWeakChapter\": true,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    }\n  ]\n}"
-        },
-        {
-          "name": "Error - Rate Limit Exceeded",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters"]
-            }
-          },
-          "status": "Too Many Requests",
-          "code": 429,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Too many requests, please try again later.\"\n}"
-        },
-        {
-          "name": "Error - Server Error",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters"]
-            }
-          },
-          "status": "Internal Server Error",
-          "code": 500,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Server error while retrieving chapters\",\n  \"details\": \"Details about the specific error...\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "Get Chapter by ID",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
-          "host": ["{{base_url}}"],
-          "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
-        },
-        "description": "Retrieve a specific chapter by its MongoDB _id. Replace `683f49980dbf881e4ce70ff3` with an actual chapter ID."
-      },
-      "response": [
-        {
-          "name": "Success - Chapter Found",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": true,\n  \"chapter\": {\n    \"_id\": \"683f49980dbf881e4ce70ff3\",\n    \"subject\": \"Physics\",\n    \"chapter\": \"Intro to Physics\",\n    \"class\": \"Class 11\",\n    \"unit\": \"General\",\n    \"yearWiseQuestionCount\": {\"2020\": 1},\n    \"questionSolved\": 1,\n    \"status\": \"Completed\",\n    \"isWeakChapter\": false,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
-        },
-        {
-          "name": "Error - Invalid ID Format",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters/invalid-id",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "invalid-id"]
-            }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Invalid chapter ID format.\"\n}"
-        },
-        {
-          "name": "Error - Chapter Not Found",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters/000000000000000000000000",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "000000000000000000000000"]
-            }
-          },
-          "status": "Not Found",
-          "code": 404,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Chapter not found.\"\n}"
-        },
-        {
-          "name": "Error - Server Error",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
-            }
-          },
-          "status": "Internal Server Error",
-          "code": 500,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Server error while retrieving chapter.\",\n  \"details\": \"Details about the specific error...\"\n}"
-        }
-      ]
-    },
-    {
-      "name": "Upload Chapters (Admin)",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "x-api-key",
-            "value": "{{admin_api_key}}",
-            "description": "Admin API key for authentication",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "formdata",
-          "formdata": [
+          "response": [
             {
-              "key": "file",
-              "type": "file",
-              "src": "/path/to/your/chapters.json",
-              "description": "JSON file containing an array of chapter objects"
+              "name": "Success - Basic Pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters?page=1&limit=2",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters"],
+                  "query": [
+                    {"key": "page", "value": "1"},
+                    {"key": "limit", "value": "2"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+                { "key": "X-Cache-Status", "value": "MISS" }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"chapters\": [\n      {\n        \"_id\": \"683f49980dbf881e4ce70ff3\",\n        \"subject\": \"Physics\",\n        \"chapter\": \"Intro to Physics\",\n        \"class\": \"Class 11\",\n        \"unit\": \"General\",\n        \"yearWiseQuestionCount\": {\"2020\": 1, \"2021\": 3, \"2022\": 2},\n        \"questionSolved\": 6,\n        \"status\": \"Completed\",\n        \"isWeakChapter\": false,\n        \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n        \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n      },\n      {\n        \"_id\": \"60d21b4667d0d8992e610c86\",\n        \"subject\": \"Physics\",\n        \"chapter\": \"Vectors\",\n        \"class\": \"Class 11\",\n        \"unit\": \"Mechanics\",\n        \"yearWiseQuestionCount\": {\"2021\": 2, \"2022\": 4, \"2023\": 1},\n        \"questionSolved\": 7,\n        \"status\": \"In Progress\",\n        \"isWeakChapter\": true,\n        \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n        \"updatedAt\": \"2024-01-15T00:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 2,\n      \"total\": 15,\n      \"totalPages\": 8,\n      \"hasNextPage\": true,\n      \"hasPrevPage\": false\n    }\n  },\n  \"message\": \"Chapters retrieved successfully\"\n}"
             }
           ]
         },
-        "url": {
-          "raw": "{{base_url}}/api/v1/chapters",
-          "host": ["{{base_url}}"],
-          "path": ["api", "v1", "chapters"]
-        },
-        "description": "Upload a JSON file containing an array of chapters. Requires admin authentication via the x-api-key header. Update the 'src' for the file parameter to an actual file path on your local machine when testing."
-      },
-      "response": [
         {
-          "name": "Success - Chapters Uploaded (Partial Success Example)",
-          "originalRequest": {
+          "name": "Get All Chapters - Advanced Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters?page=1&limit=5&class=Class 11&subject=Physics&unit=Mechanics&status=Completed&weakChapters=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "class",
+                  "value": "Class 11",
+                  "description": "Filter by class (e.g., 'Class 11', 'Class 12')"
+                },
+                {
+                  "key": "subject",
+                  "value": "Physics",
+                  "description": "Filter by subject (e.g., 'Physics', 'Chemistry', 'Mathematics')"
+                },
+                {
+                  "key": "unit",
+                  "value": "Mechanics",
+                  "description": "Filter by unit name"
+                },
+                {
+                  "key": "status",
+                  "value": "Completed",
+                  "description": "Filter by status: 'Not Started', 'In Progress', or 'Completed'"
+                },
+                {
+                  "key": "weakChapters",
+                  "value": "true",
+                  "description": "Filter by weak chapter status: 'true' or 'false'"
+                }
+              ]
+            },
+            "description": "Retrieve chapters with comprehensive filtering options. Combine multiple filters to get specific results. All query parameters are optional."
+          },
+          "response": [
+            {
+              "name": "Success - Filtered Results",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters?class=Class 11&subject=Physics&weakChapters=true",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters"],
+                  "query": [
+                    {"key": "class", "value": "Class 11"},
+                    {"key": "subject", "value": "Physics"},
+                    {"key": "weakChapters", "value": "true"}
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+                { "key": "X-Cache-Status", "value": "HIT" }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"chapters\": [\n      {\n        \"_id\": \"60d21b4667d0d8992e610c86\",\n        \"subject\": \"Physics\",\n        \"chapter\": \"Vectors\",\n        \"class\": \"Class 11\",\n        \"unit\": \"Mechanics\",\n        \"yearWiseQuestionCount\": {\"2021\": 2, \"2022\": 1},\n        \"questionSolved\": 3,\n        \"status\": \"In Progress\",\n        \"isWeakChapter\": true,\n        \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n        \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n      },\n      {\n        \"_id\": \"60d21b4667d0d8992e610c87\",\n        \"subject\": \"Physics\",\n        \"chapter\": \"Motion in a Straight Line\",\n        \"class\": \"Class 11\",\n        \"unit\": \"Mechanics\",\n        \"yearWiseQuestionCount\": {\"2020\": 1, \"2021\": 2, \"2022\": 1},\n        \"questionSolved\": 4,\n        \"status\": \"Completed\",\n        \"isWeakChapter\": true,\n        \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n        \"updatedAt\": \"2024-01-10T00:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"total\": 2,\n      \"totalPages\": 1,\n      \"hasNextPage\": false,\n      \"hasPrevPage\": false\n    }\n  },\n  \"message\": \"Filtered chapters retrieved successfully\",\n  \"appliedFilters\": {\n    \"class\": \"Class 11\",\n    \"subject\": \"Physics\",\n    \"weakChapters\": true\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Chapters - Subject Filter Only",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters?subject=Mathematics&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters"],
+              "query": [
+                {
+                  "key": "subject",
+                  "value": "Mathematics",
+                  "description": "Filter by Mathematics subject only"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Example of filtering by subject only - useful for subject-specific dashboards"
+          }
+        },
+        {
+          "name": "Get All Chapters - Status and Class Filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters?status=Not Started&class=Class 12&page=1&limit=15",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Not Started",
+                  "description": "Show only chapters that haven't been started"
+                },
+                {
+                  "key": "class",
+                  "value": "Class 12",
+                  "description": "Filter by Class 12 only"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "15"
+                }
+              ]
+            },
+            "description": "Example of combining status and class filters - useful for tracking pending work"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Individual Chapter",
+      "description": "Operations for retrieving specific chapter details",
+      "item": [
+        {
+          "name": "Get Chapter by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
+            },
+            "description": "Retrieve a specific chapter by its MongoDB ObjectId. Replace the ID in the URL with an actual chapter ID from your database. This endpoint also benefits from Redis caching."
+          },
+          "response": [
+            {
+              "name": "Success - Chapter Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+                { "key": "X-Cache-Status", "value": "HIT" }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"chapter\": {\n      \"_id\": \"683f49980dbf881e4ce70ff3\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Intro to Physics\",\n      \"class\": \"Class 11\",\n      \"unit\": \"General\",\n      \"yearWiseQuestionCount\": {\n        \"2020\": 1,\n        \"2021\": 3,\n        \"2022\": 2,\n        \"2023\": 4\n      },\n      \"questionSolved\": 10,\n      \"status\": \"Completed\",\n      \"isWeakChapter\": false,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    }\n  },\n  \"message\": \"Chapter retrieved successfully\"\n}"
+            },
+            {
+              "name": "Error - Invalid ID Format",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters/invalid-id-format",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters", "invalid-id-format"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid chapter ID format. Please provide a valid MongoDB ObjectId.\",\n  \"error\": {\n    \"type\": \"VALIDATION_ERROR\",\n    \"field\": \"id\",\n    \"value\": \"invalid-id-format\"\n  }\n}"
+            },
+            {
+              "name": "Error - Chapter Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters/507f1f77bcf86cd799439011",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters", "507f1f77bcf86cd799439011"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Chapter not found with the provided ID.\",\n  \"error\": {\n    \"type\": \"RESOURCE_NOT_FOUND\",\n    \"resource\": \"chapter\",\n    \"id\": \"507f1f77bcf86cd799439011\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Operations",
+      "description": "Protected admin endpoints requiring API key authentication",
+      "item": [
+        {
+          "name": "Upload Chapters (Admin)",
+          "request": {
             "method": "POST",
-            "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ],
-            "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "dummy.json" } ] },
-            "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{admin_api_key}}",
+                "description": "Admin API key for authentication - required for this endpoint",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Select your chapters.json file containing an array of chapter objects. File must be JSON format and under 10MB.",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters"]
+            },
+            "description": "Upload a JSON file containing an array of chapters. This is an admin-only operation that requires the x-api-key header. The endpoint validates each chapter, uploads valid ones, and reports any validation failures. Cache is automatically invalidated after successful upload.\n\nExpected JSON structure:\n```json\n[\n  {\n    \"subject\": \"Physics\",\n    \"chapter\": \"Chapter Name\",\n    \"class\": \"Class 11\",\n    \"unit\": \"Unit Name\",\n    \"yearWiseQuestionCount\": {\"2023\": 5},\n    \"questionSolved\": 5,\n    \"status\": \"Completed\",\n    \"isWeakChapter\": false\n  }\n]\n```"
           },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": true,\n  \"message\": \"Successfully processed 2 chapters.\",\n  \"successCount\": 1,\n  \"failedCount\": 1,\n  \"failedChapters\": [\n    {\n      \"chapter\": { \"subject\": \"Physics\", \"chapter\": null },\n      \"error\": \"\\\"chapter\\\" must be a string, \\\"class\\\" is required, \\\"unit\\\" is required, \\\"yearWiseQuestionCount\\\" is required, \\\"questionSolved\\\" is required, \\\"status\\\" is required, \\\"isWeakChapter\\\" is required\"\n    }\n  ]\n}"
-        },
+          "response": [
+            {
+              "name": "Success - All Chapters Uploaded",
+              "originalRequest": {
+                "method": "POST",
+                "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ],
+                "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "chapters_success.json" } ] },
+                "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Successfully processed 3 chapters.\",\n  \"data\": {\n    \"successCount\": 3,\n    \"failedCount\": 0,\n    \"uploadedChapters\": [\n      \"683f49980dbf881e4ce70ff4\",\n      \"683f49980dbf881e4ce70ff5\",\n      \"683f49980dbf881e4ce70ff6\"\n    ],\n    \"failedChapters\": []\n  },\n  \"cacheInvalidated\": true\n}"
+            },
+            {
+              "name": "Success - Partial Upload (Some Failed)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ],
+                "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "chapters_mixed.json" } ] },
+                "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Successfully processed 3 chapters with 1 failure.\",\n  \"data\": {\n    \"successCount\": 2,\n    \"failedCount\": 1,\n    \"uploadedChapters\": [\n      \"683f49980dbf881e4ce70ff7\",\n      \"683f49980dbf881e4ce70ff8\"\n    ],\n    \"failedChapters\": [\n      {\n        \"index\": 2,\n        \"chapter\": {\n          \"subject\": \"Physics\",\n          \"chapter\": null,\n          \"class\": \"Class 11\"\n        },\n        \"errors\": [\n          \"Chapter name is required\",\n          \"Unit is required\",\n          \"yearWiseQuestionCount is required\",\n          \"questionSolved is required\",\n          \"status is required\",\n          \"isWeakChapter is required\"\n        ]\n      }\n    ]\n  },\n  \"cacheInvalidated\": true\n}"
+            },
+            {
+              "name": "Error - Unauthorized (Missing API Key)",
+              "originalRequest": {
+                 "method": "POST", 
+                 "header": [], 
+                 "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "chapters.json" } ] }, 
+                 "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized: Invalid or missing API Key\",\n  \"error\": {\n    \"type\": \"AUTHENTICATION_ERROR\",\n    \"description\": \"Admin access required. Please provide a valid x-api-key header.\"\n  }\n}"
+            },
+            {
+              "name": "Error - No File Uploaded",
+              "originalRequest": {
+                 "method": "POST", 
+                 "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], 
+                 "body": { "mode": "formdata", "formdata": [] }, 
+                 "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Please upload a JSON file containing chapter data\",\n  \"error\": {\n    \"type\": \"VALIDATION_ERROR\",\n    \"field\": \"file\",\n    \"description\": \"File upload is required for this endpoint\"\n  }\n}"
+            },
+            {
+              "name": "Error - Invalid File Type",
+              "originalRequest": {
+                 "method": "POST", 
+                 "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], 
+                 "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "invalid.txt" } ] }, 
+                 "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file type. Only JSON files are allowed.\",\n  \"error\": {\n    \"type\": \"FILE_TYPE_ERROR\",\n    \"allowedTypes\": [\"application/json\", \"text/json\"],\n    \"receivedType\": \"text/plain\"\n  }\n}"
+            },
+            {
+              "name": "Error - File Too Large",
+              "originalRequest": {
+                 "method": "POST", 
+                 "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], 
+                 "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "large_file.json" } ] }, 
+                 "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"File too large. Maximum size is 10MB.\",\n  \"error\": {\n    \"type\": \"FILE_SIZE_ERROR\",\n    \"maxSize\": \"10MB\",\n    \"receivedSize\": \"15MB\"\n  }\n}"
+            },
+            {
+              "name": "Error - Malformed JSON",
+              "originalRequest": {
+                 "method": "POST", 
+                 "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], 
+                 "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "malformed.json" } ] }, 
+                 "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid JSON file. Could not parse content.\",\n  \"error\": {\n    \"type\": \"JSON_PARSE_ERROR\",\n    \"details\": \"Unexpected token '}' at position 127\",\n    \"line\": 8\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error Scenarios",
+      "description": "Common error responses that can occur across all endpoints",
+      "item": [
         {
-          "name": "Error - Unauthorized (Missing API Key)",
-          "originalRequest": {
-             "method": "POST", "header": [], "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "dummy.json" } ] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
+          "name": "Rate Limit Exceeded",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/chapters",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "chapters"]
+            },
+            "description": "Example response when rate limit (30 requests/minute per IP) is exceeded"
           },
-          "status": "Unauthorized",
-          "code": 401,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized: Invalid API Key\"\n}"
-        },
-        {
-          "name": "Error - No File Uploaded",
-          "originalRequest": {
-             "method": "POST", "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], "body": { "mode": "formdata", "formdata": [] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Please upload a JSON file\"\n}"
-        },
-        {
-          "name": "Error - Invalid File Type (e.g., not JSON)",
-          "originalRequest": {
-             "method": "POST", "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "dummy.txt" } ] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file type. Only JSON files are allowed.\",\n  \"details\": \"Error\"\n}"
-        },
-        {
-          "name": "Error - File Too Large",
-          "originalRequest": {
-             "method": "POST", "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "largefile.json" } ] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"File too large. Maximum size is 10MB.\",\n  \"details\": \"LIMIT_FILE_SIZE\"\n}"
-        },
-        {
-          "name": "Error - Malformed JSON File",
-          "originalRequest": {
-             "method": "POST", "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "malformed.json" } ] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
-          },
-          "status": "Bad Request",
-          "code": 400,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Invalid JSON file. Could not parse content.\",\n  \"details\": \"Unexpected token ...\"\n}"
-        },
-         {
-          "name": "Error - Server Error During Upload",
-          "originalRequest": {
-             "method": "POST", "header": [ { "key": "x-api-key", "value": "{{admin_api_key}}" } ], "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "chapters.json" } ] }, "url": { "raw": "{{base_url}}/api/v1/chapters", "host": ["{{base_url}}"], "path": ["api", "v1", "chapters"] }
-          },
-          "status": "Internal Server Error",
-          "code": 500,
-          "_postman_previewlanguage": "json",
-          "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
-          "cookie": [],
-          "body": "{\n  \"success\": false,\n  \"message\": \"Server error while processing uploaded file.\",\n  \"details\": \"Details about the specific error...\"\n}"
+          "response": [
+            {
+              "name": "Error - Rate Limit Exceeded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/chapters",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "chapters"]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": "json",
+              "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error occurred while processing your request.\",\n  \"error\": {\n    \"type\": \"INTERNAL_SERVER_ERROR\",\n    \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n    \"requestId\": \"req_12345\"\n  }\n}"
+            }
+          ]
         }
       ]
     }
@@ -329,30 +475,72 @@
       "listen": "prerequest",
       "script": {
         "type": "text/javascript",
-        "exec": [""]
+        "exec": [
+          "// Pre-request script for logging and environment setup",
+          "console.log('Making request to:', pm.request.url.toString());",
+          "console.log('Request method:', pm.request.method);",
+          "",
+          "// Add timestamp to request",
+          "pm.globals.set('requestTimestamp', new Date().toISOString());"
+        ]
       }
     },
     {
       "listen": "test",
       "script": {
         "type": "text/javascript",
-        "exec": [""]
+        "exec": [
+          "// Global test script for all requests",
+          "pm.test('Response time is less than 2000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});",
+          "",
+          "pm.test('Response has success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "});",
+          "",
+          "pm.test('Content-Type header is present', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "// Log response details",
+          "console.log('Response status:', pm.response.status);",
+          "console.log('Response time:', pm.response.responseTime + 'ms');"
+        ]
       }
     }
   ],
- "variable": [
-  {
-    "key": "base_url",
-    "value": "http://localhost:5000",
-    "type": "string",
-    "description": "Base URL for the API"
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://project-x-iz5j.onrender.com",
+      "type": "string",
+      "description": "Base URL for the Chapter Performance Dashboard API"
+    },
+    {
+      "key": "admin_api_key",
+      "value": "fd4a2e2b5c7a34f1089e1e309ad9bafe7820c8fd093712ef3d3f3259fc1b7d2a",
+      "type": "string",
+      "description": "Admin API key for protected routes (required for upload operations)"
+    },
+    {
+      "key": "sample_chapter_id",
+      "value": "683f49980dbf881e4ce70ff3",
+      "type": "string",
+      "description": "Sample chapter ID for testing individual chapter retrieval"
+    },
+    {
+      "key": "api_version",
+      "value": "v1",
+      "type": "string",
+      "description": "API version identifier"
+    }
+  ],
+  "auth": {
+    "type": "noauth"
   },
-  {
-    "key": "admin_api_key",
-    "value": "fd4a2e2b5c7a34f1089e1e309ad9bafe7820c8fd093712ef3d3f3259fc1b7d2a",
-    "type": "string",
-    "description": "Admin API key for protected routes"
+  "protocolProfileBehavior": {
+    "disableBodyPruning": true
   }
-]
-
 }
