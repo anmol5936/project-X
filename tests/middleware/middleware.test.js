@@ -7,7 +7,7 @@ const { createRateLimiter } = require('../../middleware/rateLimiter');
 const dbHandler = require('../../utils/db-handler');
 
 // Mock API key for testing
-process.env.ADMIN_API_KEY = 'test-admin-key';
+process.env.ADMIN_API_KEY = 'fd4a2e2b5c7a34f1089e1e309ad9bafe7820c8fd093712ef3d3f3259fc1b7d2a';
 
 let app;
 let redisClient;
