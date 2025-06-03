@@ -76,7 +76,7 @@
           "_postman_previewlanguage": "json",
           "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
           "cookie": [],
-          "body": "{\n  \"success\": true,\n  \"total\": 4,\n  \"page\": 1,\n  \"limit\": 2,\n  \"chapters\": [\n    {\n      \"_id\": \"60d21b4667d0d8992e610c85\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Intro to Physics\",\n      \"class\": \"Class 11\",\n      \"unit\": \"General\",\n      \"yearWiseQuestionCount\": {\"2020\": 1},\n      \"questionSolved\": 1,\n      \"status\": \"Completed\",\n      \"isWeakChapter\": false,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    },\n    {\n      \"_id\": \"60d21b4667d0d8992e610c86\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Vectors\",\n      \"class\": \"Class 11\",\n      \"unit\": \"Mechanics\",\n      \"yearWiseQuestionCount\": {\"2021\": 2},\n      \"questionSolved\": 2,\n      \"status\": \"In Progress\",\n      \"isWeakChapter\": true,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    }\n  ]\n}"
+          "body": "{\n  \"success\": true,\n  \"total\": 4,\n  \"page\": 1,\n  \"limit\": 2,\n  \"chapters\": [\n    {\n      \"_id\": \"683f49980dbf881e4ce70ff3\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Intro to Physics\",\n      \"class\": \"Class 11\",\n      \"unit\": \"General\",\n      \"yearWiseQuestionCount\": {\"2020\": 1},\n      \"questionSolved\": 1,\n      \"status\": \"Completed\",\n      \"isWeakChapter\": false,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    },\n    {\n      \"_id\": \"60d21b4667d0d8992e610c86\",\n      \"subject\": \"Physics\",\n      \"chapter\": \"Vectors\",\n      \"class\": \"Class 11\",\n      \"unit\": \"Mechanics\",\n      \"yearWiseQuestionCount\": {\"2021\": 2},\n      \"questionSolved\": 2,\n      \"status\": \"In Progress\",\n      \"isWeakChapter\": true,\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n    }\n  ]\n}"
         },
         {
           "name": "Error - Rate Limit Exceeded",
@@ -122,11 +122,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/v1/chapters/60d21b4667d0d8992e610c85",
+          "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
           "host": ["{{base_url}}"],
-          "path": ["api", "v1", "chapters", "60d21b4667d0d8992e610c85"]
+          "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
         },
-        "description": "Retrieve a specific chapter by its MongoDB _id. Replace `60d21b4667d0d8992e610c85` with an actual chapter ID."
+        "description": "Retrieve a specific chapter by its MongoDB _id. Replace `683f49980dbf881e4ce70ff3` with an actual chapter ID."
       },
       "response": [
         {
@@ -135,9 +135,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/chapters/60d21b4667d0d8992e610c85",
+              "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "60d21b4667d0d8992e610c85"]
+              "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
             }
           },
           "status": "OK",
@@ -145,7 +145,7 @@
           "_postman_previewlanguage": "json",
           "header": [ { "key": "Content-Type", "value": "application/json; charset=utf-8" } ],
           "cookie": [],
-          "body": "{\n  \"success\": true,\n  \"chapter\": {\n    \"_id\": \"60d21b4667d0d8992e610c85\",\n    \"subject\": \"Physics\",\n    \"chapter\": \"Intro to Physics\",\n    \"class\": \"Class 11\",\n    \"unit\": \"General\",\n    \"yearWiseQuestionCount\": {\"2020\": 1},\n    \"questionSolved\": 1,\n    \"status\": \"Completed\",\n    \"isWeakChapter\": false,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
+          "body": "{\n  \"success\": true,\n  \"chapter\": {\n    \"_id\": \"683f49980dbf881e4ce70ff3\",\n    \"subject\": \"Physics\",\n    \"chapter\": \"Intro to Physics\",\n    \"class\": \"Class 11\",\n    \"unit\": \"General\",\n    \"yearWiseQuestionCount\": {\"2020\": 1},\n    \"questionSolved\": 1,\n    \"status\": \"Completed\",\n    \"isWeakChapter\": false,\n    \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
         },
         {
           "name": "Error - Invalid ID Format",
@@ -189,9 +189,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/chapters/60d21b4667d0d8992e610c85",
+              "raw": "{{base_url}}/api/v1/chapters/683f49980dbf881e4ce70ff3",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "chapters", "60d21b4667d0d8992e610c85"]
+              "path": ["api", "v1", "chapters", "683f49980dbf881e4ce70ff3"]
             }
           },
           "status": "Internal Server Error",
